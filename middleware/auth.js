@@ -40,6 +40,6 @@ function Authentication(req, res, next) {
       stack: error.stack,
     });
   }
+  
 }
-
 export default Authentication;
