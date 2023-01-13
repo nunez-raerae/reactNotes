@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import * as dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
 import express from "express";
@@ -12,6 +12,7 @@ import UserSignUp from "./userModel.js";
 import Auth from "./auth.js";
 // import IsError from "./errorhandling.js";
 import VerifyUser from "./verifyUser.js";
+import ReqHandler from "./reqHandler.js";
 
 const app = express();
 app.use(cors());
@@ -24,7 +25,13 @@ app.listen("8080", () => {
 });
 db();
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const verifyRes = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoidXNlclJhZTEiLCJwYXNzd29yZCI6InVzZXJSYWUiLCJhY2Nlc3NUb2tlbiI6ImR3YWR3YWQiLCJfaWQiOiI2M2MwZWU5M2ExODc5ZjUwODRjMWZhOWYiLCJfX3YiOjB9LCJpYXQiOjE2NzM1ODgzNzEsImV4cCI6MTY3MzU5MTk3MX0.ag21yGC-yL7bKh734OTjylOix5fXev1N3pgXvz6kH64";
+  const reQuest = await ReqHandler({ verifyRes });
+  if (reQuest === "error") {
+    res.send("error");
+    return;
+  }
   res.send("Hello World!");
 });
 
@@ -78,7 +85,8 @@ app.post("/login", async (req, res) => {
       res.send({ success: false, message: "auth Error" });
       return;
     }
-    
+    const test = await ReqHandler({ verifyRes });
+
     res.send({ success: true, tkn: verifyRes });
     return;
   }
