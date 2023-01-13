@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import UserSignUp from "./userModel.js";
 dotenv.config();
 
 async function ReqHandler({ verifyRes }) {

@@ -12,10 +12,13 @@ import UserSignUp from "./userModel.js";
 import Auth from "./auth.js";
 // import IsError from "./errorhandling.js";
 import VerifyUser from "./verifyUser.js";
-import ReqHandler from "./reqHandler.js";
+// import ReqHandler from "./reqHandler.js";
+import Authentication from "./middleware/auth.js";
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+// app.use(Authentication);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -25,15 +28,10 @@ app.listen("8080", () => {
 });
 db();
 
-app.get("/", async (req, res) => {
-  const verifyRes = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoidXNlclJhZTEiLCJwYXNzd29yZCI6InVzZXJSYWUiLCJhY2Nlc3NUb2tlbiI6ImR3YWR3YWQiLCJfaWQiOiI2M2MwZWU5M2ExODc5ZjUwODRjMWZhOWYiLCJfX3YiOjB9LCJpYXQiOjE2NzM1ODgzNzEsImV4cCI6MTY3MzU5MTk3MX0.ag21yGC-yL7bKh734OTjylOix5fXev1N3pgXvz6kH64";
-  const reQuest = await ReqHandler({ verifyRes });
-  if (reQuest === "error") {
-    res.send("error");
-    return;
-  }
-  res.send("Hello World!");
+app.get("/path", Authentication, (req, res) => {
+  res.send("test");
 });
+
 
 app.post("/post", (req, res) => {
   const newD = MyModel.create(req.body);
@@ -85,7 +83,6 @@ app.post("/login", async (req, res) => {
       res.send({ success: false, message: "auth Error" });
       return;
     }
-    const test = await ReqHandler({ verifyRes });
 
     res.send({ success: true, tkn: verifyRes });
     return;
